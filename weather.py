@@ -27,7 +27,7 @@ def fetch(url, timeout=8):
         return None
 
 
-# ---------- 天气 ----------
+# ---------- 天气 ---------- 可选city，不依靠IP获取城市天气，?lang=zh&city=XX
 raw = fetch('https://uapis.cn/api/v1/misc/weather?lang=zh')
 weather_data = json.loads(raw.decode('utf-8')) if raw else {}
 
@@ -79,14 +79,14 @@ else: greet = '🌃 晚上好！'
 quotes = ['今天改的 bug 都是昨天挖的坑', '代码可以重构，人生不能重来',
           '能用 console.log 解决的 bug 都是好 bug', 'Talk is cheap, show me the code']
 
-cache_parts = [f'✨ Claude Code {greet}']
+# 只存天气+建议——问候语和每日一言由 PS1 脚本动态计算
+cache_parts = []
 if weather_desc:
-    cache_parts[-1] += weather_desc
+    cache_parts.append(weather_desc)
 else:
-    cache_parts[-1] += f'📍 {city}'
+    cache_parts.append(f'📍 {city}')
 cache_parts.append(umbrella)
 if t_advice: cache_parts.append(t_advice)
-cache_parts.append(f'💬 {random.choice(quotes)}')
 
 claude_dir = os.environ.get('CLAUDE_CONFIG_DIR') or os.path.join(os.path.expanduser('~'), '.claude')
 os.makedirs(claude_dir, exist_ok=True)
