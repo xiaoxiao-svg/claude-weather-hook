@@ -83,6 +83,38 @@ crontab -l 2>/dev/null | { cat; echo "0 9,12,15,18,21 * * * python3 $CLAUDEDIR/h
 - **PowerShell**（statusline.ps1 状态行输出，仅 Windows）
 - **[uapis.cn](https://uapis.cn)** 天气 API（国内服务，无需 API Key，有频率限制）
 
+## 天气数据说明
+
+使用 `uapis.cn` 天气 API，支持以下方式获取城市天气：
+
+### 指定城市（推荐）
+
+在 `weather.py` 第 30 行的 URL 末尾加上 `&city=城市名`：
+
+```python
+raw = fetch('https://uapis.cn/api/v1/misc/weather?lang=zh&city=贵阳')
+```
+
+支持中文城市名（如 `北京`、`上海`）或英文名（如 `Tokyo`、`London`）。
+
+### IP 自动定位（默认）
+
+不传 `city` 参数时，API 会根据请求来源 IP 自动判断城市：
+
+```python
+raw = fetch('https://uapis.cn/api/v1/misc/weather?lang=zh')
+```
+
+但 IP 定位不一定准，常见原因：
+
+| 原因 | 说明 |
+|------|------|
+| **运营商 IP 库偏差** | 宽带出口 IP 的归属地可能标到邻近城市 |
+| **代理 / VPN** | 翻墙、游戏加速器等会从异地节点出网 |
+| **公司 / 校园网络** | 统一出口可能在外地 |
+
+如果发现天气显示的城市不对，直接加上 `&city=你所在的城市` 即可。
+
 ## 自定义
 
 | 修改 | 文件 | 位置 |
